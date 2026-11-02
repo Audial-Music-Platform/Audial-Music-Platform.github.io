@@ -24,13 +24,13 @@ class DisplaySystem {
     style.textContent += ` .amp-desktop{height:calc(100dvh - 115px);min-height:420px;position:relative;display:flex;flex-direction:column}.amp-dock{display:flex;gap:6px;overflow-x:auto;padding:10px 0;flex-shrink:0}.amp-dock button{white-space:nowrap;font-size:12px}.amp-workspace{position:relative;flex:1;overflow:hidden;border-radius:16px;background:radial-gradient(circle at 50% 30%,#30416a66,transparent 70%)}.amp-window{position:absolute;width:min(700px,75%);height: min(480px,80%);min-width:280px;min-height:180px;resize:both;overflow:hidden;background:#182131ef;border:1px solid #ffffff35;border-radius:14px;box-shadow:0 16px 55px #0009;display:flex;flex-direction:column}.amp-window[hidden]{display:none}.amp-window.maximized{inset:0!important;width:100%!important;height:100%!important;resize:none}.amp-window-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 12px;background:#ffffff15;cursor:move;touch-action:none}.amp-window-bar button{padding:4px 11px}.amp-window-content{overflow:auto;flex:1;padding:20px}.amp-handheld{display:flex;flex-direction:column;height:calc(100dvh - 110px);min-height:400px}.amp-handheld-screen{flex:1;overflow:auto;padding:12px}.amp-android-nav{display:flex;justify-content:space-around;align-items:center;padding:7px;background:#ffffff12;border-radius:24px}.amp-android-nav button{border:0;background:transparent;font-size:25px;min-width:65px}.amp-recent-card{display:flex;justify-content:space-between;gap:12px;padding:15px;margin:8px 0;background:#ffffff14;border-radius:15px}.amp-mobile .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.amp-tablet .tiles{grid-template-columns:repeat(3,minmax(0,1fr))} `;
     const shell = this.node("div", root, "", "shell");
     const bar = this.node("header", shell, "", "bar");
-    this.node("div", bar, "AMP", "brand");
-    this.node("div", bar, "WEB OS · 0.7.0", "muted");
+    this.node("div", bar, "Audial Music Platform", "brand");
+    this.node("div", bar, "Audio Music Web Operating System · 0.7.0", "muted");
     if (this.mode === "desktop") { new DesktopEnvironment(this).mount(shell); return; }
     if (this.mode === "tablet") { new TabletEnvironment(this).mount(shell); return; }
     if (this.mode === "mobile") { new MobileEnvironment(this).mount(shell); return; }
     const hero = this.node("section", shell, "", "hero");
-    this.node("h1", hero, "AMP — Audial Music Platform");
+    this.node("h1", hero, "Audio Music Web Operating System");
     this.node("p", hero, "A modular environment for music, artists, releases, audio tools and creative infrastructure.", "muted");
     const layout = this.node("div", shell, "", "layout");
     const nav = this.node("nav", layout, "", "nav");

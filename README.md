@@ -1,4 +1,10 @@
-# AMP — Audial Music Platform
+# Audial Music Platform
+
+**Platform:** Audial Music Platform (AMP)
+
+**Operating system:** Audio Music Web Operating System (AMP Web OS)
+
+The platform is the overarching product; the operating system is its browser-based runtime and interface environment.
 Version 0.1.0 — experimental foundation.
 
 Public GitHub Pages entry: index.html loads index.js; index.js initializes the JavaScript class registry, responsive display and WebR bridge to index.R. HTML and styling are generated at runtime. No backend, accounts, uploads or copyrighted music are included.

@@ -15,6 +15,6 @@ export class DesktopEnvironment {
       const button = this.registry.display.node("button", dock, app.title);
       button.addEventListener("click", () => open("app:" + app.id, app.title, panel => this.registry.display.open(app.id, panel)));
     }
-    open("welcome", "AMP — DESKTOP", panel => this.registry.display.home(panel));
+    open("welcome", "Audio Music Web Operating System — Desktop", panel => this.registry.display.home(panel));
   }
 }
