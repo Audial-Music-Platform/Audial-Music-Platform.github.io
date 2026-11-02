@@ -21,7 +21,7 @@ class DisplaySystem {
     const shell = this.node("div", root, "", "shell");
     const bar = this.node("header", shell, "", "bar");
     this.node("div", bar, "AUDIAL MUSIC PLATFORM", "brand");
-    this.node("div", bar, "WEB OS · 0.4.0", "muted");
+    this.node("div", bar, "WEB OS · 0.5.0", "muted");
     const hero = this.node("section", shell, "", "hero");
     this.node("h1", hero, "Sound. Systems. Possibilities.");
     this.node("p", hero, "A modular environment for music, artists, releases, audio tools and creative infrastructure.", "muted");
@@ -72,6 +72,8 @@ class DisplaySystem {
     this.node("p", panel, "Lifecycle: " + snapshot.state + " · Events: " + snapshot.events, "muted");
     this.node("h3", panel, "Registered operations");
     for (const op of snapshot.operations) this.node("p", panel, op);
+    if (id === "timeline") this.node("p", panel, "4 beats at 120 BPM = " + system.invoke("beatsToSeconds", 4, 120) + " seconds", "muted");
+    if (id === "studio") this.node("p", panel, "Studio sessions are currently local metadata; recording and device routing are not active.", "muted");
     if (id === "uri") this.node("p", panel, system.invoke("create", "music", "tracks", "demo"), "muted");
     if (id === "url") this.node("p", panel, "Maps internal Audial URIs to approved HTTP(S) routes; no external redirects are performed.", "muted");
     if (id === "audio") this.node("p", panel, JSON.stringify(system.invoke("capabilities")), "muted");
