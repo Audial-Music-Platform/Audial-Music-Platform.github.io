@@ -1,0 +1,17 @@
+import assert from "node:assert/strict";
+import { Runtime } from "../runtime/runtime.js";
+import { URISystem } from "../systems/uri/system.js";
+import { URLSystem } from "../systems/url/system.js";
+globalThis.location = { origin: "https://audial-music-platform.github.io" };
+const runtime = new Runtime();
+const uri = new URISystem(runtime);
+const url = new URLSystem(runtime, uri);
+const id = uri.invoke("create", "music", "tracks", "demo");
+assert.equal(id, "audial://music/tracks/demo");
+assert.equal(uri.invoke("parse", id).canonical, id);
+assert.equal(url.invoke("map", id, "/music/tracks/demo"), "https://audial-music-platform.github.io/music/tracks/demo");
+assert.equal(url.invoke("resolve", id), "https://audial-music-platform.github.io/music/tracks/demo");
+assert.throws(() => uri.invoke("parse", "audial://music/../admin"));
+assert.throws(() => url.invoke("parse", "javascript:alert(1)"));
+assert.throws(() => url.invoke("parse", "https://user:pass@example.com"));
+console.log("URI and URL tests passed");

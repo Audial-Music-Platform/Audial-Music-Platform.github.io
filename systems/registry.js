@@ -1,3 +1,5 @@
+import { URISystem } from "./uri/system.js";
+import { URLSystem } from "./url/system.js";
 import { PluginSystem } from "./plugins/system.js";
 import { LibrarySystem } from "./library/system.js";
 import { SoundSystem } from "./sound/system.js";
@@ -8,6 +10,12 @@ export class SystemRegistry {
     this.registry = { runtime, systems: new Map() };
     for (const System of [PluginSystem, LibrarySystem, SoundSystem, AudioSystem, MusicSystem]) {
       const instance = new System(runtime);
+      this.registry.systems.set(instance.registry.name, instance);
+      runtime.register("system:" + instance.registry.name, instance);
+    }
+    const uri = new URISystem(runtime);
+    const url = new URLSystem(runtime, uri);
+    for (const instance of [uri, url]) {
       this.registry.systems.set(instance.registry.name, instance);
       runtime.register("system:" + instance.registry.name, instance);
     }
