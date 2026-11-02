@@ -25,7 +25,7 @@ class DisplaySystem {
     const shell = this.node("div", root, "", "shell");
     const bar = this.node("header", shell, "", "bar");
     this.node("div", bar, "AMP", "brand");
-    this.node("div", bar, "WEB OS · 0.6.0", "muted");
+    this.node("div", bar, "WEB OS · 0.7.0", "muted");
     if (this.mode === "desktop") { new DesktopEnvironment(this).mount(shell); return; }
     if (this.mode === "tablet") { new TabletEnvironment(this).mount(shell); return; }
     if (this.mode === "mobile") { new MobileEnvironment(this).mount(shell); return; }
@@ -79,6 +79,9 @@ class DisplaySystem {
     this.node("p", panel, "Lifecycle: " + snapshot.state + " · Events: " + snapshot.events, "muted");
     this.node("h3", panel, "Registered operations");
     for (const op of snapshot.operations) this.node("p", panel, op);
+    if (id === "browser") this.node("p", panel, JSON.stringify(system.invoke("detect")) + " · " + JSON.stringify(system.invoke("features")), "muted");
+    if (id === "ean") { const result = system.invoke("encode13", "590123412345"); this.node("p", panel, "EAN-13 example: " + result.value + " · " + result.bits.length + " modules", "muted"); }
+    if (id === "qr") this.node("p", panel, "Payload registry ready; QR image encoding is not yet implemented.", "muted");
     if (id === "timeline") this.node("p", panel, "4 beats at 120 BPM = " + system.invoke("beatsToSeconds", 4, 120) + " seconds", "muted");
     if (id === "studio") this.node("p", panel, "Studio sessions are currently local metadata; recording and device routing are not active.", "muted");
     if (id === "uri") this.node("p", panel, system.invoke("create", "music", "tracks", "demo"), "muted");

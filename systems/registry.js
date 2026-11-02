@@ -1,3 +1,6 @@
+import { BrowserSystem } from "./browser/system.js";
+import { EANSystem } from "./ean/system.js";
+import { QRSystem } from "./qr/system.js";
 import { ArrangementSystem } from "./arrangement/system.js";
 import { TimelineSystem } from "./timeline/system.js";
 import { ProjectSystem } from "./project/system.js";
@@ -19,7 +22,7 @@ export class SystemRegistry {
     }
     const uri = new URISystem(runtime);
     const url = new URLSystem(runtime, uri);
-    for (const instance of [uri, url, new ArrangementSystem(runtime), new TimelineSystem(runtime), new ProjectSystem(runtime), new StudioSystem(runtime)]) {
+    for (const instance of [uri, url, new ArrangementSystem(runtime), new TimelineSystem(runtime), new ProjectSystem(runtime), new StudioSystem(runtime), new BrowserSystem(runtime), new EANSystem(runtime), new QRSystem(runtime)]) {
       this.registry.systems.set(instance.registry.name, instance);
       runtime.register("system:" + instance.registry.name, instance);
     }
