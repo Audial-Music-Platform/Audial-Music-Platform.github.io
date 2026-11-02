@@ -1,8 +1,8 @@
 import { MusicApplications, LocalAudioSession } from "../music/apps.js";
 class DisplaySystem {
-  constructor(runtime, mode) {
+  constructor(runtime, mode, systems) {
     this.mode = mode;
-    this.registry = { runtime, mode, applications: new MusicApplications(runtime), audio: new LocalAudioSession(runtime), root: null };
+    this.registry = { runtime, mode, systems, applications: new MusicApplications(runtime), audio: new LocalAudioSession(runtime), root: null };
   }
   node(tag, parent, text = "", cls = "") {
     const el = document.createElement(tag);
@@ -21,7 +21,7 @@ class DisplaySystem {
     const shell = this.node("div", root, "", "shell");
     const bar = this.node("header", shell, "", "bar");
     this.node("div", bar, "AUDIAL MUSIC PLATFORM", "brand");
-    this.node("div", bar, "WEB OS · 0.2.0", "muted");
+    this.node("div", bar, "WEB OS · 0.3.0", "muted");
     const hero = this.node("section", shell, "", "hero");
     this.node("h1", hero, "Sound. Systems. Possibilities.");
     this.node("p", hero, "A modular environment for music, artists, releases, audio tools and creative infrastructure.", "muted");
@@ -29,6 +29,10 @@ class DisplaySystem {
     const nav = this.node("nav", layout, "", "nav");
     nav.setAttribute("aria-label", "Applications");
     const panel = this.node("main", layout, "", "panel");
+    for (const system of this.registry.systems.all()) {
+      const button = this.node("button", nav, system.name.toUpperCase() + " SYSTEM");
+      button.addEventListener("click", () => this.openSystem(system.name, panel));
+    }
     for (const app of this.registry.applications.all()) {
       const button = this.node("button", nav, app.title);
       button.addEventListener("click", () => this.open(app.id, panel));
@@ -42,6 +46,14 @@ class DisplaySystem {
   }
   home(panel) {
     panel.replaceChildren();
+    this.node("h2", panel, "Independent Systems");
+    const systems = this.node("div", panel, "", "tiles");
+    for (const system of this.registry.systems.all()) {
+      const tile = this.node("button", systems, "", "tile");
+      this.node("strong", tile, system.name.toUpperCase() + " SYSTEM");
+      this.node("span", tile, system.operations.join(" · "));
+      tile.addEventListener("click", () => this.openSystem(system.name, panel));
+    }
     this.node("h2", panel, "Applications");
     this.node("p", panel, "Choose a workspace to explore the platform foundation.", "muted");
     const tiles = this.node("div", panel, "", "tiles");
@@ -51,6 +63,18 @@ class DisplaySystem {
       this.node("span", tile, app.description);
       tile.addEventListener("click", () => this.open(app.id, panel));
     }
+  }
+  openSystem(id, panel) {
+    const system = this.registry.systems.get(id);
+    const snapshot = system.snapshot();
+    panel.replaceChildren();
+    this.node("h2", panel, id.toUpperCase() + " SYSTEM");
+    this.node("p", panel, "Lifecycle: " + snapshot.state + " · Events: " + snapshot.events, "muted");
+    this.node("h3", panel, "Registered operations");
+    for (const op of snapshot.operations) this.node("p", panel, op);
+    if (id === "audio") this.node("p", panel, JSON.stringify(system.invoke("capabilities")), "muted");
+    if (id === "plugins") this.node("p", panel, "Manifest inspection only. Third-party code execution and installation are disabled until permission and isolation qualification.", "muted");
+    this.registry.runtime.emit("system:opened", { system: id });
   }
   open(id, panel) {
     const app = this.registry.applications.open(id);
@@ -81,6 +105,6 @@ class DisplaySystem {
     }
   }
 }
-export class DesktopSystem extends DisplaySystem { constructor(runtime) { super(runtime, "desktop"); } }
-export class TabletSystem extends DisplaySystem { constructor(runtime) { super(runtime, "tablet"); } }
-export class MobileSystem extends DisplaySystem { constructor(runtime) { super(runtime, "mobile"); } }
+export class DesktopSystem extends DisplaySystem { constructor(runtime, systems) { super(runtime, "desktop", systems); } }
+export class TabletSystem extends DisplaySystem { constructor(runtime, systems) { super(runtime, "tablet", systems); } }
+export class MobileSystem extends DisplaySystem { constructor(runtime, systems) { super(runtime, "mobile", systems); } }

@@ -1,3 +1,4 @@
+import { SystemRegistry } from "./systems/registry.js";
 import { Runtime } from "./runtime/runtime.js";
 import { BrowserEnvironment } from "./browser/environment.js";
 import { DesktopSystem, TabletSystem, MobileSystem } from "./systems/display.js";
@@ -8,15 +9,16 @@ class AudialPlatform {
     this.registry.environment = new BrowserEnvironment();
     this.registry.runtime = new Runtime();
     this.registry.audit = new AuditBridge(this.registry.runtime);
+    this.registry.systems = new SystemRegistry(this.registry.runtime);
     this.registry.display = this.createDisplay();
     this.start();
   }
   createDisplay() {
     const mode = this.registry.environment.mode();
-    return mode === "mobile" ? new MobileSystem(this.registry.runtime) : mode === "tablet" ? new TabletSystem(this.registry.runtime) : new DesktopSystem(this.registry.runtime);
+    return mode === "mobile" ? new MobileSystem(this.registry.runtime, this.registry.systems) : mode === "tablet" ? new TabletSystem(this.registry.runtime, this.registry.systems) : new DesktopSystem(this.registry.runtime, this.registry.systems);
   }
   start() {
-    this.registry.runtime.emit("platform:start", { version: "0.2.0" });
+    this.registry.runtime.emit("platform:start", { version: "0.3.0" });
     this.registry.display.mount(document.body);
     this.registry.audit.start();
     window.addEventListener("resize", () => this.onResize(), { passive: true });
