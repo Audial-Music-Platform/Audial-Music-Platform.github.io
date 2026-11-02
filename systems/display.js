@@ -1,27 +1,84 @@
+import { MusicApplications, LocalAudioSession } from "../music/apps.js";
 class DisplaySystem {
-  constructor(runtime, mode) { this.registry = { runtime, mode, elements: [] }; this.mode = mode; }
-  element(tag, text, parent) {
-    const node = document.createElement(tag);
-    if (text) node.textContent = text;
-    parent.append(node);
-    this.registry.elements.push(node);
-    return node;
+  constructor(runtime, mode) {
+    this.mode = mode;
+    this.registry = { runtime, mode, applications: new MusicApplications(runtime), audio: new LocalAudioSession(runtime), root: null };
+  }
+  node(tag, parent, text = "", cls = "") {
+    const el = document.createElement(tag);
+    el.textContent = text;
+    if (cls) el.className = cls;
+    parent.append(el);
+    return el;
   }
   mount(root) {
+    this.registry.root = root;
     root.replaceChildren();
-    const style = this.element("style", "", document.head);
-    style.textContent = "*,*::before,*::after{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 70% 15%,#27334a,#10121a 60%);color:#eef2ff;font:16px system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:clamp(24px,6vw,90px)}h1{font-size:clamp(2.5rem,7vw,6rem);letter-spacing:-.05em;margin:20px 0}p{line-height:1.6;color:#bac6d7}.eyebrow{letter-spacing:.2em;text-transform:uppercase;color:#80e4ce}.panel{margin-top:35px;padding:24px;border-radius:20px;background:#ffffff0c;border:1px solid #ffffff24;backdrop-filter:blur(18px)}button{border:1px solid #ffffff50;border-radius:12px;background:#ffffff15;color:white;padding:12px 18px;cursor:pointer}button:hover{background:#ffffff25}.muted{font-size:13px}";
-    const main = this.element("main", "", root);
-    const eyebrow = this.element("div", "AUDIAL / MUSIC PLATFORM", main); eyebrow.className = "eyebrow";
-    this.element("h1", "Sound. Systems. Possibilities.", main);
-    this.element("p", "An evolving digital environment for music, artists, sound technology and creative infrastructure.", main);
-    const panel = this.element("section", "", main); panel.className = "panel";
-    this.element("h2", "Platform foundation · 0.1.0", panel);
-    this.element("p", "JavaScript runtime · WebR audit integration · Responsive Web OS", panel);
-    const button = this.element("button", "Inspect runtime", panel);
-    const output = this.element("p", "", panel); output.className = "muted";
-    button.addEventListener("click", () => { const event = this.registry.runtime.emit("runtime:inspect", { mode: this.mode }); output.textContent = "Event #" + event.id + " · " + event.name + " · " + this.mode; });
-    this.element("p", "Experimental foundation — music services and account systems are not yet deployed.", main).className = "muted";
+    document.getElementById("audial-style")?.remove();
+    const style = this.node("style", document.head);
+    style.id = "audial-style";
+    style.textContent = `*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#273955,#10121a 62%);color:#f1f6ff;font:15px system-ui,sans-serif;min-height:100vh}button,input{font:inherit}button{cursor:pointer;color:inherit;background:#ffffff13;border:1px solid #ffffff25;border-radius:12px;padding:11px 15px}button:hover,button:focus-visible{background:#ffffff2a}button:focus-visible,input:focus-visible{outline:2px solid #70e2cb;outline-offset:3px}.shell{max-width:1350px;margin:auto;padding:24px}.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #ffffff20;padding-bottom:18px}.brand{font-size:18px;font-weight:750;letter-spacing:.14em}.muted{color:#aabacf}.hero{padding:55px 0 28px}.hero h1{font-size:clamp(2.4rem,6vw,5.5rem);letter-spacing:-.06em;margin:0}.hero p{max-width:720px;line-height:1.6}.layout{display:grid;grid-template-columns:240px 1fr;gap:20px}.nav,.panel{background:#ffffff0a;border:1px solid #ffffff1c;border-radius:20px;padding:18px;backdrop-filter:blur(16px)}.nav{display:flex;flex-direction:column;gap:8px}.nav button{text-align:left}.panel{min-height:280px}.panel h2{margin-top:4px}.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.tile{text-align:left;min-height:115px}.tile strong{display:block;margin-bottom:8px}.tile span{color:#aabacf;font-size:13px}.status{display:flex;gap:18px;flex-wrap:wrap;padding:22px 0;color:#aabacf;font-size:12px}audio{width:min(100%,600px);margin-top:18px}input[type=file]{max-width:100%}@media(max-width:900px){.layout{grid-template-columns:1fr}.nav{flex-direction:row;overflow:auto}.nav button{white-space:nowrap}.hero{padding:35px 0 18px}}@media(max-width:600px){.shell{padding:14px}.bar{align-items:flex-start}.brand{font-size:14px}.nav{padding:10px}.panel{min-height:260px}.hero h1{font-size:2.8rem}}`;
+    const shell = this.node("div", root, "", "shell");
+    const bar = this.node("header", shell, "", "bar");
+    this.node("div", bar, "AUDIAL MUSIC PLATFORM", "brand");
+    this.node("div", bar, "WEB OS · 0.2.0", "muted");
+    const hero = this.node("section", shell, "", "hero");
+    this.node("h1", hero, "Sound. Systems. Possibilities.");
+    this.node("p", hero, "A modular environment for music, artists, releases, audio tools and creative infrastructure.", "muted");
+    const layout = this.node("div", shell, "", "layout");
+    const nav = this.node("nav", layout, "", "nav");
+    nav.setAttribute("aria-label", "Applications");
+    const panel = this.node("main", layout, "", "panel");
+    for (const app of this.registry.applications.all()) {
+      const button = this.node("button", nav, app.title);
+      button.addEventListener("click", () => this.open(app.id, panel));
+    }
+    const footer = this.node("footer", shell, "", "status");
+    this.node("span", footer, "Mode: " + this.mode);
+    this.node("span", footer, "Runtime: active");
+    this.node("span", footer, "WebR: optional analysis");
+    this.node("span", footer, "Experimental · no cloud upload");
+    this.home(panel);
+  }
+  home(panel) {
+    panel.replaceChildren();
+    this.node("h2", panel, "Applications");
+    this.node("p", panel, "Choose a workspace to explore the platform foundation.", "muted");
+    const tiles = this.node("div", panel, "", "tiles");
+    for (const app of this.registry.applications.all()) {
+      const tile = this.node("button", tiles, "", "tile");
+      this.node("strong", tile, app.title);
+      this.node("span", tile, app.description);
+      tile.addEventListener("click", () => this.open(app.id, panel));
+    }
+  }
+  open(id, panel) {
+    const app = this.registry.applications.open(id);
+    panel.replaceChildren();
+    this.node("h2", panel, app.title);
+    this.node("p", panel, app.description, "muted");
+    if (id === "library" || id === "studio") {
+      const input = this.node("input", panel);
+      input.type = "file"; input.accept = "audio/*";
+      input.setAttribute("aria-label", "Choose local audio file");
+      const message = this.node("p", panel, "Select an audio file. It stays in this browser session.", "muted");
+      input.addEventListener("change", () => {
+        try {
+          if (!input.files?.[0]) return;
+          const audio = this.registry.audio.load(input.files[0]);
+          panel.querySelector("audio")?.remove();
+          audio.controls = true;
+          panel.append(audio);
+          message.textContent = input.files[0].name + " · " + (input.files[0].size / 1048576).toFixed(2) + " MiB";
+        } catch (error) { message.textContent = String(error.message); }
+      });
+    } else if (id === "settings") {
+      this.node("p", panel, "Mode: " + this.mode);
+      this.node("p", panel, "Recorded runtime events: " + this.registry.runtime.registry.events.length);
+      this.node("p", panel, "No accounts, backend or persistent storage are enabled.", "muted");
+    } else {
+      this.node("p", panel, "Workspace reserved for a future qualified implementation. No remote publishing or account functionality is active.", "muted");
+    }
   }
 }
 export class DesktopSystem extends DisplaySystem { constructor(runtime) { super(runtime, "desktop"); } }

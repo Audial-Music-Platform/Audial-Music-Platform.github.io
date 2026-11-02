@@ -16,7 +16,7 @@ class AudialPlatform {
     return mode === "mobile" ? new MobileSystem(this.registry.runtime) : mode === "tablet" ? new TabletSystem(this.registry.runtime) : new DesktopSystem(this.registry.runtime);
   }
   start() {
-    this.registry.runtime.emit("platform:start", { version: "0.1.0" });
+    this.registry.runtime.emit("platform:start", { version: "0.2.0" });
     this.registry.display.mount(document.body);
     this.registry.audit.start();
     window.addEventListener("resize", () => this.onResize(), { passive: true });
