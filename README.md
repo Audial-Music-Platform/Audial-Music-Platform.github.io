@@ -14,3 +14,6 @@ Five independent SystemCore-derived class instances: Plugin, Library, Sound, Aud
 
 ## Version 0.5.0 — production organization systems
 Arrangement, Timeline, Project and Studio are separate SystemCore-derived instances with independent registries, events, operations and lifecycles. Projects track workspace metadata, arrangements hold clip placements, timelines convert beats/time and store markers, studios manage in-memory session metadata. Cross-system references are identifiers; referential integrity, persistence, multitrack editing, audio recording and collaboration are not yet implemented. Node regression tests cover core operations, invalid inputs and lifecycle transitions.
+
+## Version 0.6.0 — device-specific interface systems
+DesktopEnvironment owns a dedicated WindowSystem with movable, resizable, focusable, minimizable, maximizable and closable windows, one per application/system ID. TabletEnvironment and MobileEnvironment use Android-style Back/Home/Recent controls with in-memory navigation history and closeable recent cards. All interfaces share the 11 underlying platform systems. These are experimental browser interfaces, not native operating systems; persistence, touch-swipe gestures and comprehensive browser accessibility qualification remain outstanding.
